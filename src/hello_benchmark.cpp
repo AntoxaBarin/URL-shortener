@@ -14,8 +14,8 @@ void HelloBenchmark(benchmark::State& state) {
 
     for (auto _ : state) {
       const auto name = kNames[i++ % std::size(kNames)];
-      auto result = service_template::SayHelloTo(
-          name, service_template::UserType::kFirstTime);
+      auto result =
+          url_shortener::SayHelloTo(name, url_shortener::UserType::kFirstTime);
       benchmark::DoNotOptimize(result);
     }
   });

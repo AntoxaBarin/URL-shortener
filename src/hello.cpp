@@ -9,7 +9,7 @@
 #include <userver/storages/postgres/component.hpp>
 #include <userver/utils/assert.hpp>
 
-namespace service_template {
+namespace url_shortener {
 
 namespace {
 
@@ -45,7 +45,42 @@ class Hello final : public userver::server::handlers::HttpHandlerBase {
       }
     }
 
-    return service_template::SayHelloTo(name, user_type);
+    return url_shortener::SayHelloTo(name, user_type);
+  }
+
+  userver::storages::postgres::ClusterPtr pg_cluster_;
+};
+
+class GetUsers final : public userver::server::handlers::HttpHandlerBase {
+ public:
+  static constexpr std::string_view kName = "handler-users";
+
+  GetUsers(const userver::components::ComponentConfig& config,
+           const userver::components::ComponentContext& component_context)
+      : HttpHandlerBase(config, component_context),
+        pg_cluster_(
+            component_context
+                .FindComponent<userver::components::Postgres>("postgres-db-1")
+                .GetCluster()) {}
+
+  std::string HandleRequestThrow(
+      [[maybe_unused]] const userver::server::http::HttpRequest& request,
+      userver::server::request::RequestContext&) const override {
+    auto result = pg_cluster_->Execute(
+        userver::storages::postgres::ClusterHostType::kMaster,
+        "SELECT name, count FROM hello_schema.users");
+
+    std::string userList = "";
+    for (auto row : result.AsSetOf<std::tuple<std::basic_string<char>, int>>(
+             userver::storages::postgres::kRowTag)) {
+      static_assert(std::is_same_v<decltype(row),
+                                   std::tuple<std::basic_string<char>, int>>,
+                    "Iterate over tuples");
+      auto [name, count] = row;
+      userList += fmt::format("{} -- {}\n", name, count);
+    }
+
+    return userList;
   }
 
   userver::storages::postgres::ClusterPtr pg_cluster_;
@@ -70,8 +105,9 @@ std::string SayHelloTo(std::string_view name, UserType type) {
 
 void AppendHello(userver::components::ComponentList& component_list) {
   component_list.Append<Hello>();
+  component_list.Append<GetUsers>();
   component_list.Append<userver::components::Postgres>("postgres-db-1");
   component_list.Append<userver::clients::dns::Component>();
 }
 
-}  // namespace service_template
+}  // namespace url_shortener

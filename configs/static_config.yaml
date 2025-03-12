@@ -55,6 +55,11 @@ components_manager:
             method: POST                  # It will only reply to POST requests.
             task_processor: main-task-processor  # Run it on CPU bound task processor
 
+        handler-users:                   
+            path: /v1/users              
+            method: GET                 
+            task_processor: main-task-processor    
+
         postgres-db-1:
             dbconnection: $dbconnection
             dbconnection#env: DB_CONNECTION
