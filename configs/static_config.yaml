@@ -43,6 +43,7 @@ components_manager:
             path: /tests/{action}
             method: POST
             task_processor: main-task-processor
+
         handler-ping:
             path: /ping
             method: GET
@@ -50,15 +51,10 @@ components_manager:
             throttling_enabled: false
             url_trailing_slash: strict-match
 
-        handler-hello:                    # Finally! Our handler.
-            path: /v1/hello               # Registering handler by URL '/v1/hello'.
-            method: POST                  # It will only reply to POST requests.
-            task_processor: main-task-processor  # Run it on CPU bound task processor
-
-        handler-users:                   
-            path: /v1/users              
-            method: GET                 
-            task_processor: main-task-processor    
+        handler-shortener:
+            path: /
+            method: POST,GET,DELETE
+            task_processor: main-task-processor
 
         postgres-db-1:
             dbconnection: $dbconnection

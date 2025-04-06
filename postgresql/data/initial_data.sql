@@ -1,4 +1,4 @@
-INSERT INTO hello_schema.users(name, count)
-VALUES ('user-from-initial_data.sql', 42)
-ON CONFLICT (name)
+INSERT INTO shortener_schema.users(url, short_uri, created_at)
+VALUES ('TODO', 'TODO', 'TODO')
+ON CONFLICT (url)
 DO NOTHING;
