@@ -51,9 +51,14 @@ components_manager:
             throttling_enabled: false
             url_trailing_slash: strict-match
 
+        handler-redirect:
+            path: /{short_uri}
+            method: GET
+            task_processor: main-task-processor
+
         handler-shortener:
             path: /
-            method: POST,GET,DELETE
+            method: POST
             task_processor: main-task-processor
 
         postgres-db-1:

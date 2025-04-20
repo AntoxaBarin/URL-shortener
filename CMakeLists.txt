@@ -29,6 +29,8 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -s")
 add_library(${PROJECT_NAME}_objs OBJECT
     src/shortener.cpp
     src/shortener.hpp
+    src/redirect.cpp
+    src/redirect.hpp
 )
 target_link_libraries(${PROJECT_NAME}_objs PUBLIC userver::postgresql)
 

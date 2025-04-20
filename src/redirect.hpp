@@ -13,11 +13,11 @@ using namespace userver;
 
 namespace url_shortener {
 
-class Shortener final : public server::handlers::HttpHandlerBase {
+class Redirect final : public server::handlers::HttpHandlerBase {
  public:
-  static constexpr std::string_view kName = "handler-shortener";
+  static constexpr std::string_view kName = "handler-redirect";
 
-  Shortener(const components::ComponentConfig& config,
+  Redirect(const components::ComponentConfig& config,
             const components::ComponentContext& component_context);
 
   std::string HandleRequestThrow(
@@ -27,9 +27,5 @@ class Shortener final : public server::handlers::HttpHandlerBase {
  private:
   storages::postgres::ClusterPtr pg_cluster_;
 };
-
-std::string GenerateShortURI();
-
-void AppendShortener(components::ComponentList& component_list);
 
 }  // namespace url_shortener
